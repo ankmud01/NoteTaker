@@ -14,7 +14,7 @@ module.exports = function(app){
     const noteId = shortid.generate();
     //Adding id variable to the newly note thet came from user request
     newNote.id = noteId;
-    console.log(newNote);
+    // console.log(newNote);
     
     //Listing the existing notes prior to adding the new note that came from user request
     let notes = readNotes;
@@ -29,6 +29,16 @@ module.exports = function(app){
 
     //responds with the list of notes added into the file system including the new one
     res.json(notes);
-
     });
+
+    app.delete("/api/notes/:id", function(req, res){
+        const deleteNote = req.params;
+        let notes = readNotes;
+        //since notes are in array using filter method to remove the matching note id's...
+        const notesToKeep = notes.filter((note) =>note.id !== deleteNote.id)
+        // console.log(notesToKeep);
+        writeNotes(notesToKeep);
+        res.json(notesToKeep);
+    });
+
 }
