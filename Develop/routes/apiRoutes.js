@@ -1,31 +1,34 @@
-const readnotes = require("../db/readDbJSONFile");
-const writenote = require("../db/updateDbJSONFile");
 const shortid = require("shortid");
-
+const readNotes = require("../db/readJSONFile");
+const writeNotes = require("../db/writeJSONFile");
 
 module.exports = function(app){
     app.get("/api/notes", function(req,res){
-    const db = readnotes;
-    res.json(db);
+        res.json(readNotes);
     });
 
     app.post("/api/notes", function(req, res){
-    // console.log("Hello Ankit, I want logic to write notes");
-    let unique = shortid.generate();
-    console.log (unique);
-    
     const newNote = req.body;
-    newNote.id = unique;
+    
+    //This generates a unique id using shortid package
+    const noteId = shortid.generate();
+    //Adding id variable to the newly note thet came from user request
+    newNote.id = noteId;
     console.log(newNote);
+    
+    //Listing the existing notes prior to adding the new note that came from user request
+    let notes = readNotes;
+    // console.log(notes);
 
-    let writeDb = readnotes;
-    writeDb.push(newNote);
+    // //Pusing the newnote from request into the file to be written
+    notes.push(newNote);
+    // console.log(notes);
 
-    writenote(writeDb);
-    res.json(writeDb);
-    });
+    //Calls write function to add the newnote into the filesystem
+    writeNotes(notes);
 
-    app.delete("/api/notes/:id", function(req, res){
-    console.log("Hello Ankit, I want logic to delete a note");
+    //responds with the list of notes added into the file system including the new one
+    res.json(notes);
+
     });
 }
