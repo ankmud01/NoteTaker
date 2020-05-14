@@ -36,9 +36,10 @@ module.exports = function(app){
         let notes = readNotes;
         //since notes are in array using filter method to remove the matching note id's...
         const notesToKeep = notes.filter((note) =>note.id !== deleteNote.id)
-        // console.log(notesToKeep);
+         // console.log(notesToKeep);
         writeNotes(notesToKeep);
         res.json(notesToKeep);
     });
+
 
 }
